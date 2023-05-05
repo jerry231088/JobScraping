@@ -1,0 +1,1 @@
+# This is a Python script to scrape job posting and save it in JSON file
