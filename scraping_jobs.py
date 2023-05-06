@@ -10,10 +10,17 @@ from utils import check_exists_by_xpath
 
 
 def job_posts(web_driver):
+    dept_element_map = dict()
     try:
         elements = web_driver.find_elements(By.XPATH, '//*[@id="career-jobs"]/div/div[6]/div')
         for e in elements:
-            dept_element_map = job_details(web_driver, e)
+            jd = job_details(web_driver, e)
+            for k, v in jd.items():
+                if k not in dept_element_map:
+                    dept_element_map[k] = list()
+                dept_element_map[k].extend(v)
+            print(dept_element_map)
+            print('*********')
             get_jd_and_qualifications(dept_element_map)
     except NoSuchElementException:
         print('No such element present!')
@@ -28,21 +35,18 @@ def job_details(web_driver, e):
                 if k not in dept_element_map:
                     dept_element_map[k] = list()
                 dept_element_map[k].extend(v)
-            time.sleep(5)
             web_driver.find_element(By.XPATH, f'//button[text()="{btn_num}"]').click()
             btn_num += 1
+            time.sleep(5)
         except NoSuchElementException:
             print('No next page!')
             # check how to handle in case of other value returns
             return False
-    print(dept_element_map)
-    print('*********')
     return dept_element_map
 
 
 def create_dept_url_map(e):
     dept_element_map = dict() # Dept: Href
-    lst = list()
     job_list_wrapper_element = e.find_elements(By.CLASS_NAME, 'page-job-list-wrapper')
     index = 1
     total = len(job_list_wrapper_element)
@@ -55,8 +59,7 @@ def create_dept_url_map(e):
             if key not in dept_element_map.keys():
                 dept_element_map[key] = list()
             index += 1
-            lst.append(value)
-    dept_element_map[key].extend(lst)
+            dept_element_map[key].append(value)
 
     print(dept_element_map)
     print('---------')
