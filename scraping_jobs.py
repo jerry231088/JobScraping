@@ -26,20 +26,18 @@ def job_posts(web_driver):
 
 def job_details(web_driver, e):
     dept_element_map = dict()  # Dept: Href
-    btn_num = 2
+    btn_num = 1
     while check_exists_by_xpath(web_driver, f'//button[text()="{btn_num}"]'):
         try:
+            btn_num += 1
             for k, v in create_dept_url_map(e).items():
                 if k not in dept_element_map:
                     dept_element_map[k] = list()
                 dept_element_map[k].extend(v)
             web_driver.find_element(By.XPATH, f'//button[text()="{btn_num}"]').click()
-            btn_num += 1
             time.sleep(5)
         except NoSuchElementException:
             print('No next page!')
-            # check how to handle in case of other value returns
-            return False
     return dept_element_map
 
 
@@ -48,6 +46,7 @@ def create_dept_url_map(e):
     job_list_wrapper_element = e.find_elements(By.CLASS_NAME, 'page-job-list-wrapper')
     index = 1
     total = len(job_list_wrapper_element)
+    print(f'total: {total}')
     for el in job_list_wrapper_element:
         if index <= total:
             key = el.find_element(By.XPATH, f'//*[@id="career-jobs"]/div/div[6]/div/div[{index}]/p[1]'). \
@@ -57,10 +56,9 @@ def create_dept_url_map(e):
             if key not in dept_element_map.keys():
                 dept_element_map[key] = list()
             index += 1
+            if key.lower().strip() == 'product':
+                print(value)
             dept_element_map[key].append(value)
-
-    print(dept_element_map)
-    print('---------')
     return dept_element_map
 
 
@@ -83,23 +81,23 @@ def create_dept_wise_map(dept, job):
     dept_wise_jobs_details = dict()
     job_map_list = list()
     for j in job:
-        job_posted_by, job_descr, job_qualification, location = None, None, None, None
+        job_posted_by, job_desc, job_qualification, location = None, None, None, None
         job_header = j.find('header', class_='jobad-header').find_all('a')
         for t in job_header:
             job_posted_by = t.get('title').strip()
         if job_posted_by.lower() == 'indodana':
             if j.find('div', itemprop='qualifications') is not None:
                 job_qualification = j.find('div', itemprop='qualifications').text.strip()
-            job_descr = j.find('div', itemprop='responsibilities').text.strip()
+            job_desc = j.find('div', itemprop='responsibilities').text.strip()
         elif job_posted_by.lower() == 'cermati.com':
             job_qualification = j.find('div', itemprop='responsibilities').text.strip()
-            job_descr = j.find('div', class_='wysiwyg').text.strip()
+            job_desc = j.find('div', class_='wysiwyg').text.strip()
         job_location = j.find_all('spl-job-location')
         for loc in job_location:
             location = loc.get('formattedaddress').strip()
         job_map = {
             "title": j.find('h1', class_='job-title').text.strip(),
-            "description": job_descr,
+            "description": job_desc,
             "posted by": job_posted_by,
             "qualification": job_qualification,
             "location": location
