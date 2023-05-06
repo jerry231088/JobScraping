@@ -28,7 +28,6 @@ def job_details(web_driver, e):
                 if k not in dept_element_map:
                     dept_element_map[k] = list()
                 dept_element_map[k].extend(v)
-            # dept_element_map.update(create_dept_url_map(e))
             time.sleep(5)
             web_driver.find_element(By.XPATH, f'//button[text()="{btn_num}"]').click()
             btn_num += 1
@@ -72,7 +71,14 @@ def get_jd_and_qualifications(dept_element_map):
             parsed_html = BeautifulSoup(response.content, 'html.parser')
             job = parsed_html.find_all('div', class_='jobad site')
             dept_map = create_dept_wise_map(k, job)
-            dept_wise_jobs.update(dept_map)
+            for key, val in dept_map.items():
+                if key not in dept_wise_jobs:
+                    dept_wise_jobs[key] = list()
+                dept_wise_jobs[key].extend(val)
+            # dept_map = create_dept_wise_map(k, job)
+            # dept_wise_jobs.update(dept_map)
+    print(dept_wise_jobs)
+    print('..................')
     store_data_to_json(dept_wise_jobs)
 
 
