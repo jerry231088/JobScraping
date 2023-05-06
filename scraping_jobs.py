@@ -75,15 +75,13 @@ def get_jd_and_qualifications(dept_element_map):
                 if key not in dept_wise_jobs:
                     dept_wise_jobs[key] = list()
                 dept_wise_jobs[key].extend(val)
-            # dept_map = create_dept_wise_map(k, job)
-            # dept_wise_jobs.update(dept_map)
     print(dept_wise_jobs)
     print('..................')
     store_data_to_json(dept_wise_jobs)
 
 
 def create_dept_wise_map(dept, job):
-    dept_wise_jobs = dict()
+    dept_wise_jobs_details = dict()
     for j in job:
         job_posted_by, job_descr, job_qualification, location = None, None, None, None
         job_header = j.find('header', class_='jobad-header').find_all('a')
@@ -106,8 +104,9 @@ def create_dept_wise_map(dept, job):
             "qualification": job_qualification,
             "location": location
         }
-        if dept not in dept_wise_jobs.keys():
-            dept_wise_jobs[dept] = list()
-        dept_wise_jobs[dept].append(job_map)
-    print(dept_wise_jobs)
-    return dept_wise_jobs
+        if dept not in dept_wise_jobs_details.keys():
+            dept_wise_jobs_details[dept] = list()
+        dept_wise_jobs_details[dept].extend(job_map)
+    print(dept_wise_jobs_details)
+    print('##############')
+    return dept_wise_jobs_details
