@@ -19,15 +19,13 @@ def job_posts(web_driver):
                 if k not in dept_element_map:
                     dept_element_map[k] = list()
                 dept_element_map[k].extend(v)
-            print(dept_element_map)
-            print('*********')
             get_jd_and_qualifications(dept_element_map)
     except NoSuchElementException:
         print('No such element present!')
 
 
 def job_details(web_driver, e):
-    dept_element_map = dict()# Dept: Href
+    dept_element_map = dict()  # Dept: Href
     btn_num = 2
     while check_exists_by_xpath(web_driver, f'//button[text()="{btn_num}"]'):
         try:
@@ -46,7 +44,7 @@ def job_details(web_driver, e):
 
 
 def create_dept_url_map(e):
-    dept_element_map = dict() # Dept: Href
+    dept_element_map = dict()  # Dept: Href
     job_list_wrapper_element = e.find_elements(By.CLASS_NAME, 'page-job-list-wrapper')
     index = 1
     total = len(job_list_wrapper_element)
@@ -78,8 +76,6 @@ def get_jd_and_qualifications(dept_element_map):
                 if key not in dept_wise_jobs:
                     dept_wise_jobs[key] = list()
                 dept_wise_jobs[key].extend(val)
-    print(dept_wise_jobs)
-    print('..................')
     store_data_to_json(dept_wise_jobs)
 
 
@@ -112,6 +108,4 @@ def create_dept_wise_map(dept, job):
             dept_wise_jobs_details[dept] = list()
         job_map_list.append(job_map)
     dept_wise_jobs_details[dept].extend(job_map_list)
-    print(dept_wise_jobs_details)
-    print('##############')
     return dept_wise_jobs_details

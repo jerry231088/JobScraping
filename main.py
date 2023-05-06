@@ -16,7 +16,6 @@ def main(web_driver, url):
 
     # Wait for the new page to load
     WebDriverWait(web_driver, 10).until(EC.url_changes(url))
-
     job_posts(web_driver)
 
 
