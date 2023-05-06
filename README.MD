@@ -1,1 +1,1 @@
-# This is a Python script to scrape job posting and save it in JSON file
+# This is a Python script to scrape job postings from URL 'https://www.cermati.com/karir' and save it in JSON file
