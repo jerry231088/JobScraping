@@ -10,39 +10,39 @@ from utils import check_exists_by_xpath
 
 
 def job_posts(web_driver):
-    dept_element_map = dict()
+    dept_wise_job_url_map = dict()  # Dict: {Key = Dept: Value = List(Href)}
     try:
         elements = web_driver.find_elements(By.XPATH, '//*[@id="career-jobs"]/div/div[6]/div')
         for e in elements:
             jd = job_details(web_driver, e)
             for k, v in jd.items():
-                if k not in dept_element_map:
-                    dept_element_map[k] = list()
-                dept_element_map[k].extend(v)
-            get_jd_and_qualifications(dept_element_map)
+                if k not in dept_wise_job_url_map:
+                    dept_wise_job_url_map[k] = list()
+                dept_wise_job_url_map[k].extend(v)
+            get_jd_and_qualifications(dept_wise_job_url_map)
     except NoSuchElementException:
         print('No such element present!')
 
 
 def job_details(web_driver, e):
-    dept_element_map = dict()  # Dept: Href
+    dept_wise_job_url_map = dict()  # Dict: {Key = Dept: Value = List(Href)}
     btn_num = 1
     while check_exists_by_xpath(web_driver, f'//button[text()="{btn_num}"]'):
         try:
             btn_num += 1
             for k, v in create_dept_url_map(e).items():
-                if k not in dept_element_map:
-                    dept_element_map[k] = list()
-                dept_element_map[k].extend(v)
+                if k not in dept_wise_job_url_map:
+                    dept_wise_job_url_map[k] = list()
+                dept_wise_job_url_map[k].extend(v)
             web_driver.find_element(By.XPATH, f'//button[text()="{btn_num}"]').click()
             time.sleep(5)
         except NoSuchElementException:
             print('No next page!')
-    return dept_element_map
+    return dept_wise_job_url_map
 
 
 def create_dept_url_map(e):
-    dept_element_map = dict()  # Dept: Href
+    dept_element_map = dict()  # Dict: {Key = Dept: Value = List(Href)}
     job_list_wrapper_element = e.find_elements(By.CLASS_NAME, 'page-job-list-wrapper')
     index = 1
     total = len(job_list_wrapper_element)
@@ -63,7 +63,7 @@ def create_dept_url_map(e):
 
 
 def get_jd_and_qualifications(dept_element_map):
-    dept_wise_jobs = dict()
+    dept_wise_jobs = dict()  # Dict: {Key = Dept: Value = List(Job_Details)}
     for k, v in dept_element_map.items():
         for url in v:
             response = requests.get(url)
@@ -78,7 +78,7 @@ def get_jd_and_qualifications(dept_element_map):
 
 
 def create_dept_wise_map(dept, job):
-    dept_wise_jobs_details = dict()
+    dept_wise_jobs_details = dict()  # Dict: {Key = Dept: Value = List(Job_Details)}
     job_map_list = list()
     for j in job:
         job_posted_by, job_desc, job_qualification, location = None, None, None, None

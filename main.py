@@ -20,7 +20,7 @@ def main(web_driver, url):
 
 
 if __name__ == '__main__':
-    # Web URL
+    # Web URL to scrape the jobs list
     job_post_url = f'https://www.cermati.com/karir'
     # check for different Browser, if Chrome doesn't exist
     driver = webdriver.Chrome()
