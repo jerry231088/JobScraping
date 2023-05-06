@@ -46,7 +46,6 @@ def create_dept_url_map(e):
     job_list_wrapper_element = e.find_elements(By.CLASS_NAME, 'page-job-list-wrapper')
     index = 1
     total = len(job_list_wrapper_element)
-    print(f'total: {total}')
     for el in job_list_wrapper_element:
         if index <= total:
             key = el.find_element(By.XPATH, f'//*[@id="career-jobs"]/div/div[6]/div/div[{index}]/p[1]'). \
@@ -56,8 +55,6 @@ def create_dept_url_map(e):
             if key not in dept_element_map.keys():
                 dept_element_map[key] = list()
             index += 1
-            if key.lower().strip() == 'product':
-                print(value)
             dept_element_map[key].append(value)
     return dept_element_map
 
