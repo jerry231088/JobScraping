@@ -24,7 +24,11 @@ def job_details(web_driver, e):
     btn_num = 2
     while check_exists_by_xpath(web_driver, f'//button[text()="{btn_num}"]'):
         try:
-            dept_element_map.update(create_dept_url_map(e))
+            for k, v in create_dept_url_map(e).items():
+                if k not in dept_element_map:
+                    dept_element_map[k] = list()
+                dept_element_map[k].extend(v)
+            # dept_element_map.update(create_dept_url_map(e))
             time.sleep(5)
             web_driver.find_element(By.XPATH, f'//button[text()="{btn_num}"]').click()
             btn_num += 1
@@ -54,8 +58,6 @@ def create_dept_url_map(e):
             index += 1
             lst.append(value)
     dept_element_map[key].extend(lst)
-
-
 
     print(dept_element_map)
     print('---------')
